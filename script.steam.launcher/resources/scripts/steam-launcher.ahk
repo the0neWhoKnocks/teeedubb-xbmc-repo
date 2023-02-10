@@ -7,7 +7,7 @@
 ;
 ;steam.launcher.script.revision=013
 
-#NoEnv  
+#NoEnv
 #SingleInstance force
 SetWorkingDir %A_ScriptDir%
 
@@ -27,10 +27,10 @@ IfNotEqual, 5, false
 Process, Exist, Steam.exe
 if ErrorLevel
 {
-    IfWinExist, Steam ahk_class CUIEngineWin32
+    IfWinExist, ahk_group SteamBPM
 	{
-		WinActivate, Steam ahk_class CUIEngineWin32
-		WinWait, Steam ahk_class CUIEngineWin32
+		WinActivate, ahk_group SteamBPM
+		WinWait, ahk_group SteamBPM
 		Send {Esc}
 	}
 	IfEqual, 9, true
@@ -55,8 +55,7 @@ else
 	}
 }
 
-GroupAdd, SteamBPM, Steam ahk_class CUIEngineWin32
-GroupAdd, SteamBPM, Steam ahk_class steam
+GroupAdd, SteamBPM, Steam Big Picture Mode ahk_class SDL_app
 
 SteamLoop:
 ;wait for steam
@@ -66,13 +65,15 @@ IfEqual, 9, true
 }
 else
 {
+	OutputDebug "Waiting for SteamBPM to start"
 	WinWait, ahk_group SteamBPM
+	OutputDebug "SteamBPM has opened"
 }
 
 ;kill/minimise kodi
 IfEqual, 3, 0
 {
-	Run, %comspec% /c taskkill /im Kodi.exe,,Hide
+	Run, taskkill /im kodi.exe,,Hide
 	IfNotEqual, 8, 0
 	{
 		Run, %comspec% /c timeout /t %8% && tasklist /nh /fi "imagename eq Kodi.exe" | find /i "Kodi.exe" >nul && (taskkill /f /im Kodi.exe),,Hide
@@ -103,16 +104,16 @@ IfEqual, 9, true
 }
 else
 {
-	WinWait, Steam ahk_class CUIEngineWin32
-	WinActivate, Steam ahk_class CUIEngineWin32
+	WinWait, ahk_group SteamBPM
+	WinActivate, ahk_group SteamBPM
 	loop
 	{
-	  IfWinNotExist, Steam ahk_class CUIEngineWin32
+	  IfWinNotExist, ahk_group SteamBPM
 	  {
 		BPMState = closed
 		break
 	  }
-	  WinGet, MinMax, MinMax, Steam ahk_class CUIEngineWin32
+	  WinGet, MinMax, MinMax, ahk_group SteamBPM
 	  IfEqual MinMax, -1
 	  {
 		break
