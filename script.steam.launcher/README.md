@@ -15,16 +15,24 @@ http://kodi.tv/
 
 - Enable Debug Logging in Kodi to see if there are any issues with the add-on. (https://kodi.wiki/view/Log_file/Easy)
 
-### Windows - Compiling the AHK script to an .exe file for use with the addon after modifications
+### Windows
 
-1. Download v1 of AutoHotkey(https://www.autohotkey.com/download/)
-2. Use a text editor such as Notepad++ or SciTE4AutoHotkey to make your changes to the steam-launcher.ahk script file(https://notepad-plus-plus.org/ or https://www.autohotkey.com/scite4ahk/)
-3. Ensure you change the revision number in the ahk script to prevent your modified files from being overwritten during addon updates.
-4. After you've made your changes, compile it into an `.exe` by opening Ahk2Exe.
+How to compile the AHK script to an `.exe` file for use with the add-on after modifications.
+
+1. [Download v1 of AutoHotkey](https://www.autohotkey.com/download/)
+1. [Download the Portable version of SciTE4AutoHotkey](https://www.autohotkey.com/scite4ahk/)
+   - In order to debug the script, SciTE4AutoHotkey assumes the AutoHotkey binary is one level above it's folder, so create a symlink to the actual binary.
+      ```sh
+      # In the folder that contains the portable SciTE4AutoHotkey folder, run the below, but change <VERSION> to the version you installed.
+      mklink .\AutoHotkey.exe "C:\Program Files\AutoHotkey\<VERSION>\AutoHotkeyU64.exe"
+      ```
+   - Within SciTE4AutoHotkey, open the `steam-launcher.ahk` file.
+   - Add file arguments via `View > Parameters`, and add all the arguments in the first input (you don't have to add all of them individually).
+   - Ensure you change the revision number in the AHK script to prevent your modified files from being overwritten during add-on updates.
+   - After you've made your changes, compile it into an `.exe` by opening Ahk2Exe.
       ```
       Source: <PATH_TO_SCRIPT>
       Destination: <KODI_USERDATA>\addon_data\script.steam.launcher\scripts\steam-launcher.exe
       Custom Icon: <PATH_TO_ICON>
       ```
-   Click **Convert**
-4. Move both the steam-launcher ahk and exe files to %AppData%\Kodi\userdata\addon_data\script.steam.launcher\scripts
+      Click **Convert**

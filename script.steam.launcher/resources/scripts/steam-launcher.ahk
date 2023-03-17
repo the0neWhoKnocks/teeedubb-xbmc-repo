@@ -16,12 +16,11 @@
 ;Change the 'steam.launcher.script.revision =' number below to 999 to preserve changes through addon updates, otherwise it will be overwritten if the script is updated.
 ;You will need to have AutoHotKey installed to recompile this .ahk file into a .exe to work with the addon - see readme for more info.
 ;
-;steam.launcher.script.revision=016
+;steam.launcher.script.revision=016.1
 
 #NoEnv
 #SingleInstance force
 SetWorkingDir %A_ScriptDir%
-;@Ahk2Exe-SetMainIcon steam-launcher.ico
 
 if 0 != 9
 {
@@ -78,16 +77,18 @@ IfEqual, 9, true
 }
 else
 {
+	OutputDebug "Waiting for SteamBPM to start"
 	WinWait, ahk_group SteamBPM
+	OutputDebug "SteamBPM has opened"
 }
 
 ;kill/minimise kodi
 IfEqual, 3, 0
 {
-	Run, %comspec% /c taskkill /im kodi.exe,,Hide
+	Run, taskkill /im kodi.exe,,Hide
 	IfNotEqual, 8, 0
 	{
-		Run, %comspec% /c timeout /t %8% && tasklist /nh /fi "imagename eq kodi.exe" | find /i "kodi.exe" >nul && (taskkill /f /im kodi.exe),,Hide
+		Run, timeout /t %8% && tasklist /nh /fi "imagename eq kodi.exe" | find /i "kodi.exe" >nul && (taskkill /f /im kodi.exe),,Hide
 	}
 }
 IfEqual, 3, 1
