@@ -20,6 +20,15 @@
 ;
 ;steam.launcher.script.revision=018
 
+; To debug:
+;   - open the .ahk file in SciTE4AutoHotkey
+;   - Copy these args
+;		"C:\Program Files (x86)\Steam\steam.exe" "C:\Users\media\_portable\Kodi\v20\kodi.exe" "0" "true" "false" "false" "" "0" "false" "false" "false"
+;		and paste them into the first input in View > Parameters (this has to happen every time SciTE4AutoHotkey is opened)
+;   - add breakpoints
+;   - click the Debug button, then the Run button
+;   - there may be additional helpful info in my original update: https://github.com/teeedubb/teeedubb-xbmc-repo/commit/9ec06e6efafee03abde91d4329b38a515c154b64#diff-9ef89a72a79d05e2e6aa8036254c0ea23364e3678de7cd2e8793572ad8a21718
+
 #NoEnv
 #SingleInstance force
 SetWorkingDir %A_ScriptDir%
@@ -95,13 +104,27 @@ IfEqual, 9, true
 }
 Else
 {
+	OutputDebug, "Waiting for SteamBPM to start" `n
 	WinWait, ahk_group SteamBPM
+	OutputDebug, "SteamBPM has opened" `n
 }
 
 ;kill/minimise kodi
 IfEqual, 3, 0
 {
-	Run, %comspec% /c taskkill /im kodi.exe,,Hide
+	; verify the ComSpec env var is set
+	OutputDebug, %comspec% `n
+
+	; /k and no Hide, runs in a visible window to show any errors
+	Run, %comspec% /k taskkill /im kodi.exe
+	;Run, %comspec% /c taskkill /im kodi.exe,, Hide
+
+	; Solution:
+	;   - taskkill wasn't recognized when running with %comspec%.
+	;   - The %comspec% env variable was set, but when I ran SET in the cmd window that Run opened, the PATH didn't have System32 listed.
+	;   - Go to Start > search for 'env' > select Edit the System Environment Variables > double-click on Path > add `%SystemRoot%\System32` (click the Move Up button to organize).
+	;   - Had to restart my system for the script to be able to access the updated variables.
+
 	IfNotEqual, 8, 0
 	{
 		Run, %comspec% /c timeout /t %8% && tasklist /nh /fi "imagename eq kodi.exe" | find /i "kodi.exe" >nul && (taskkill /f /im kodi.exe),,Hide
